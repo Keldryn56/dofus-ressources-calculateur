@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap-editable/css/bootstrap-editable.css" integrity="sha256-YsJ7Lkc/YB0+ssBKz0c0GTx0RI+BnXcKH5SpnttERaY=" crossorigin="anonymous">
+</head>
+
+<body>
+    <header>
+        <div class="navbar navbar-dark bg-dark box-shadow">
+            <div class="container d-flex justify-content-between">
+                <a href="#" class="navbar-brand d-flex align-items-center">
+                    <i class="fas fa-calculator" style="margin-right:20px"></i>
+                    <strong>Calculateur de ressources</strong>
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="container" style="margin-top:90px">
+        <div class="row">
+            <form id="calculate" style="margin:auto">
+                <div class="form-group" id="ressource_1_container">
+                    <label class="ressource_label" for="ressource_1">Ressource 1</label>
+                    <div class="input-group mb-2">
+                        <input type="number" tabindex=1 class="form-control quantity" id="ressource_1" placeholder="quantité">
+                        <input type="text" class="form-control price" id="ressource_1_u" placeholder="prix unitaire">
+                        <div class="input-group-text"><img src="kamas.png" alt="" style="max-height:20px"></div>
+                        <i class="fas fa-times-circle remove"></i>
+                    </div>
+                </div>
+                <div class="form-group" id="ressource_2_container">
+                    <label class="ressource_label" for="ressource_2">Ressource 2</label>
+                    <div class="input-group mb-2">
+                        <input type="number" tabindex=2 class="form-control quantity" id="ressource_2" placeholder="quantité">
+                        <input type="text" class="form-control price" id="ressource_2_u" placeholder="prix unitaire">
+                        <div class="input-group-text"><img src="kamas.png" alt="" style="max-height:20px"></div>
+                        <i class="fas fa-times-circle remove"></i>
+                    </div>
+                </div>
+                <div class="form-group" id="ressource_3_container">
+                    <label class="ressource_label" for="ressource_3">Ressource 3</label>
+                    <div class="input-group mb-2">
+                        <input type="number" tabindex=3 class="form-control quantity" id="ressource_3" placeholder="quantité">
+                        <input type="text" class="form-control price" id="ressource_3_u" placeholder="prix unitaire">
+                        <div class="input-group-text"><img src="kamas.png" alt="" style="max-height:20px"></div>
+                        <i class="fas fa-times-circle remove"></i>
+                    </div>
+                </div>
+                <div class="form-group total">
+                    <label for="exampleInputEmail1">Prix total</label>
+                    <div class="input-group mb-2">
+                        <input disabled type="text" class="form-control" id="total" placeholder="Total" style="text-align:right;max-width:140px" value="0">
+                        <div class="input-group-text"><img src="kamas.png" alt="" style="max-height:20px"></div>
+                    </div>
+                </div>
+                <div id="form_footer">
+                    <button title="Ajouter une ressource" type="button" id="add_field" class="btn btn-info"><i class="fas fa-plus-circle"></i></button>
+                    <label title="Importer le JSON" class="btn btn-warning" style="margin-bottom: 0px;cursor:pointer">
+                        <i class="fas fa-upload"></i><input type="file" id="upload_json" style="display: none;">
+                    </label>
+                    <button onclick="export_json()" title="Exporter le JSON" type="button" class="btn btn-secondary"><i class="fas fa-download"></i></button>
+                    <button type="submit" style="margin-left:10px;" class="btn btn-primary float-right" tabindex=4>Calculer <i style="margin-left:10px;" class="fas fa-check"></i></button>
+                    <button onclick="reset()" class="btn btn-dark float-right">Reset <i style="margin-left:10px;" class="fas fa-sync"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal add_field" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajouter une ressource</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="add_field_form">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input id="name" class="form-control" type="text" placeholder="Nom de la ressource">
+                        </div>
+                        <div class="form-group">
+                            <input id="price" class="form-control" type="number" placeholder="Prix" value="0">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="js/bootstrap-editable.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        init_editable();
+
+        function init_editable() {
+            $('.ressource_label').editable({
+                type: 'text',
+                title: 'Enter username',
+                unsavedclass: null,
+                success: function(response, newValue) {
+                    $(this).text(newValue);
+                }
+            });
+        }
+        $("#upload_json").on("change", function(changeEvent) {
+            if (!window.FileReader) return;
+            for (var i = 0; i < changeEvent.target.files.length; ++i) {
+                (function(file) {
+                    var loader = new FileReader();
+                    loader.onload = function(loadEvent) {
+                        if (loadEvent.target.readyState != 2)
+                            return;
+                        if (loadEvent.target.error) {
+                            alert("Error while reading file " + file.name + ": " + loadEvent.target.error);
+                            return;
+                        }
+
+                        $("#calculate .form-group:not(.total)").remove();
+                        var el = jQuery.parseJSON(loadEvent.target.result);
+                        jQuery.each(el, function(i, v) {
+                            add_ressource(v.name, v.price);
+                        });
+
+                        init_editable();
+                    };
+                    loader.readAsText(file);
+                })(changeEvent.target.files[i]);
+            }
+        });
+
+        $(document).on("submit", "#add_field_form", function(e) {
+            e.preventDefault();
+            var name = $("#add_field_form #name").val();
+            var price = $("#add_field_form #price").val();
+            add_ressource(name, price);
+            $('.modal.add_field').modal('hide');
+            reset_indexes();
+            init_editable();
+        });
+
+        $(document).on("submit", "#calculate", function(e) {
+            e.preventDefault();
+            var total = 0;
+            calculate();
+        });
+
+        $(document).on("click", ".remove", function() {
+            $(this).parents(".form-group").remove();
+            calculate();
+            reset_indexes();
+        });
+
+        $(document).on("click", "#calculate input", function() {
+            $(this).val('');
+        });
+
+        $("#add_field").click(function() {
+            $("#add_field_form #name").val('');
+            $("#add_field_form #price").val(0);
+            $('.modal.add_field').modal('show');
+        });
+
+        function download(filename, text) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+
+        function reset() {
+            $("#calculate .form-group:not(.total)").each(function() {
+                $(this).find(".quantity").val(0);
+            });
+        }
+
+        function export_json() {
+
+            var ressource = {}; // my object
+            var json = []; // my array
+
+            $("#calculate .form-group:not(.total)").each(function() {
+                var name = $(this).find("label").text();
+                var price = $(this).find(".price").val();
+
+                ressource = {
+                    name: name,
+                    price: price
+                }
+
+                json.push(ressource);
+            });
+
+            download("data.json", JSON.stringify(json, null, 2));
+
+        }
+
+        function reset_indexes() {
+            var i = 0;
+            $("#calculate .form-group:not(.total)").each(function() {
+                $(this).attr('tabindex', i + 1);
+                i++;
+            });
+        }
+
+        function calculate() {
+            var total = 0;
+            $("#calculate .form-group:not(.total)").each(function() {
+                total += parseInt($(this).find(".quantity").val()) * parseInt($(this).find(".price").val());
+            });
+            $("#total").val(numberWithSpaces(total));
+        }
+
+        function numberWithSpaces(x) {
+            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        }
+
+        function add_ressource(name, price) {
+            let id = Math.random().toString(36).substring(7);
+
+            var el = '<div class="form-group" id="' + id + '_container">';
+            el += '<label class="ressource_label" for="' + id + '">' + name + '</label>';
+            el += '<div class="input-group mb-2">';
+            el += '<input type="number" tabindex=1 class="form-control quantity" id="' + id + '" placeholder="quantité" value="0">';
+            el += '<input type="text" class="form-control price" id="' + id + '_u" placeholder="prix" value="' + price + '">';
+            el += '<div class="input-group-text"><img src="kamas.png" alt="" style="max-height:20px"></div>';
+            el += '<i class="fas fa-times-circle remove"></i>';
+            el += '</div>';
+            el += '</div>';
+
+            $(el).insertBefore(".form-group.total");
+        }
+    </script>
+</body>
+
+</html>
