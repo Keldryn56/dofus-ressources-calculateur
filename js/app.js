@@ -10,7 +10,17 @@ function init_editable() {
         }
     });
 }
+
+function spin(bool){
+    if(bool){
+        $("#overlay").css("display","flex");
+    }else{
+        $("#overlay").css("display","none");
+    }
+}
+
 $("#upload_json").on("change", function(changeEvent) {
+    spin(true);
     if (!window.FileReader) return;
     for (var i = 0; i < changeEvent.target.files.length; ++i) {
         (function(file) {
@@ -34,6 +44,9 @@ $("#upload_json").on("change", function(changeEvent) {
             loader.readAsText(file);
         })(changeEvent.target.files[i]);
     }
+    setTimeout(function() {
+        spin(false);
+    }, 200);
 });
 
 $(document).on("submit", "#add_field_form", function(e) {
